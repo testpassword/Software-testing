@@ -1,3 +1,4 @@
+import world.*
 import org.junit.jupiter.api.*
 import kotlin.test.*
 import org.junit.jupiter.api.Test
@@ -50,6 +51,13 @@ class ShipTest {
             testShip move distinationPlanet
             assert(testShip.crew.map { it.key.location }.all { it == distinationPlanet })
         }
+
+    @Test fun `Move to current planet`() {
+        val earth = Planet("earth", 1 to 1, Space.CELESTIAL_BODY.HABITABLE)
+        val testShip = Ship("ship", earth, emptyMap())
+        testShip.move(earth)
+        assertEquals(earth, testShip.location)
+    }
 }
 
 /**
@@ -84,6 +92,21 @@ class CreatureTest {
         val testObject = createPlanet()
         tester.affect(testObject) { (it as Planet).coordinates = -1 to -1 }
         assertEquals(-1 to -1, testObject.coordinates, "Creature correctly affect on another object")
+    }
+
+    @Test fun `Test dog can eat`() {
+        val victim = createShip().apply { size = 200 }
+        assertAll(
+            {
+                val bigDog = Dog("big_dog", createPlanet(), 10000)
+                bigDog.eat(victim)
+                assertEquals(Space.HELL, victim.location)
+            },
+            {
+                val littleDog = Dog("little_dog", createPlanet(), 5)
+                assertThrows<Exception> { littleDog.eat(victim) }
+            }
+        )
     }
 }
 
