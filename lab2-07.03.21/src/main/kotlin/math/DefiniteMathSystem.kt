@@ -1,12 +1,14 @@
+package math
+
 import kotlin.math.pow
 
 class DefiniteMathSystem: MathFunction<Number> {
 
-    private val sec = Sec()
-    private val cos = Cos()
-    private val cot = Cot()
-    private val ln = Ln()
-    private val log = Log()
+    var sec = Sec()
+    var cos = Cos()
+    var cot = Cot()
+    var ln = Ln()
+    var log = Log()
 
     override fun invoke(vararg args: Number, precision: Double): Double {
         val x = args[0].toDouble()

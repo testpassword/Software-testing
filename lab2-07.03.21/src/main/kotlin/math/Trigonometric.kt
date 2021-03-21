@@ -1,3 +1,5 @@
+package math
+
 import kotlin.math.*
 
 // https://www.cyberforum.ru/cpp-beginners/thread189032.html
@@ -21,14 +23,6 @@ class CosOriginal: MathFunction<Number> {
         }
 }
 
-class Sin: MathFunction<Number> {
-    override fun invoke(vararg args: Number, precision: Double): Double =
-        args[0].toDouble().let {
-            val cos = Cos()
-            return if (it.isSpecial) it else -cos(it + PI / 2, precision = precision).normalize(precision)
-        }
-}
-
 class Cos: MathFunction<Number> {
     override fun invoke(vararg args: Number, precision: Double): Double {
         val x = args[0].toDouble()
@@ -39,22 +33,35 @@ class Cos: MathFunction<Number> {
     }
 }
 
+class Sin: MathFunction<Number> {
+
+    var cos = Cos()
+
+    override fun invoke(vararg args: Number, precision: Double): Double =
+        args[0].toDouble().let {
+            return if (it.isSpecial) it else -cos(it + PI / 2, precision = precision).normalize(precision)
+        }
+}
+
 class Cot: MathFunction<Number> {
+
+    var cos = Cos()
+    var sin = Sin()
+
     override fun invoke(vararg args: Number, precision: Double): Double =
         args[0].toDouble().let {
             when {
                 it.isSpecial -> it
                 it == 0.0 -> Double.NaN
-                else -> Cos()(it, precision = precision) / Sin()(it, precision = precision)
+                else -> cos(it, precision = precision) / sin(it, precision = precision)
             }
         }
 }
 
 class Sec: MathFunction<Number> {
-    override fun invoke(vararg args: Number, precision: Double): Double =
-        args[0].toDouble().let { if (it.isSpecial) it else 1 / Cos()(it, precision = precision) }
-}
 
-fun main() {
-    println(Sec()(PI / 2))
+    var cos = Cos()
+
+    override fun invoke(vararg args: Number, precision: Double): Double =
+        args[0].toDouble().let { if (it.isSpecial) it else 1 / cos(it, precision = precision) }
 }
