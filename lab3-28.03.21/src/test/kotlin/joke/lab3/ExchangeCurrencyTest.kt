@@ -16,8 +16,6 @@ class ExchangeCurrencyTest(browserType: Class<RemoteWebDriver>): AbstractPageTes
             page = second as ExchangePage
         }
         driver.get(page.url)
-        page.fCurValInput.clear()
-        page.sCurValInput.clear()
     }
 
     @Test fun `exchange with correct data`() {
