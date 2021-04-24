@@ -14,11 +14,8 @@ class ExchangePage(driver: WebDriver): PageObject(driver) {
     @FindBy(xpath = "//input[@class = 'form-input-field' and @data-bind = 'second-input']")
     lateinit var sCurValInput: WebElement
 
-    @FindBy(xpath = "//span[@data-bind = 'hint-text'][1]")
+    @FindBy(xpath = "//input[@data-bind = 'first-input']/parent::*/div/span")
     lateinit var fCurSelectorLbl: WebElement
-
-    @FindBy(xpath = "/html/body/div[1]/div[1]/aside/div/section[1]/div[2]/div[3]/div/div[1]/span")
-    lateinit var sCurSelectorLbl: WebElement
 
     @FindBy(xpath = "//span[@data-test = 'converter-swap-fields']")
     lateinit var curSwapper: WebElement

@@ -18,13 +18,15 @@ object DriverFactory {
         val driver = driverType.getConstructor().newInstance().apply {
             manage().window().maximize()
             manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS)
+            manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS)
+            manage().timeouts().setScriptTimeout(13, TimeUnit.SECONDS)
         }
         return Env(driver, pageClass.getConstructor(WebDriver::class.java).newInstance(driver))
     }
 
     val BROWSERS_CLASSES =
         listOf(
-            //arrayOf(FirefoxDriver::class.java),
+            arrayOf(FirefoxDriver::class.java),
             arrayOf(ChromeDriver::class.java)
         )
 }
@@ -45,8 +47,14 @@ infix fun WebDriver.isExist(by: By) =
 fun WebElement.setAttribute(executor: WebDriver, attrName: String, attrValue: String) =
     (executor as JavascriptExecutor).executeScript("arguments[0].setAttribute('$attrName', '$attrValue')", this)
 
-fun WebElement.changeStyle(executor: WebDriver, styleName: String, styleValue: String) {
-    val style = this.getAttribute("style").split("; ").associate { it.split(": ").zipWithNext()[0] }.toMutableMap()
-    style[styleName] = styleValue
-    this.setAttribute(executor, "style", style.map { "${it.key}: ${it.value}" }.joinToString("; "))
-}
+fun WebElement.changeStyle(executor: WebDriver, styleName: String, styleValue: String) =
+    this.setAttribute(executor,
+        "style",
+        this.getAttribute("style")
+            .split("; ")
+            .associate { it.split(": ").zipWithNext()[0] }
+            .toMutableMap()
+            .also { it.replace(styleName, styleValue) }
+            .map { "${it.key}: ${it.value}" }
+            .joinToString("; ")
+    )

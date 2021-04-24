@@ -19,28 +19,16 @@ class ExchangeCurrencyTest(browserType: Class<RemoteWebDriver>): AbstractPageTes
     }
 
     @Test fun `exchange with correct data`() {
+        page.fCurValInput.clear()
         page.fCurValInput.sendKeys("123")
         assertNotNull(page.sCurValInput["value"].numeric)
     }
 
     @Test fun `exchange with incorrect data`() {
+        page.fCurValInput.clear()
         page.fCurValInput.sendKeys("kek")
         println(page.fCurValInput.text)
         assertEquals(0.0, page.sCurValInput["value"].numeric)
-    }
-
-    @Test fun `currency changing`() {
-        page.fCurSelectorLbl.click()
-        val newCurName = page.curListSelectorFirstCell.text
-        page.curListSelectorFirstCell.click()
-        assertEquals(newCurName, page.fCurSelectorLbl.text)
-    }
-
-    @Test fun `currency swapping`() {
-        val oldCurNames = page.fCurSelectorLbl.text to page.sCurSelectorLbl.text
-        page.curSwapper.click()
-        val newCurNames = page.fCurSelectorLbl.text to page.sCurSelectorLbl.text
-        assertNotEquals(oldCurNames, newCurNames)
     }
 
     @Test fun `show currency exchange rate table`() {
@@ -51,5 +39,20 @@ class ExchangeCurrencyTest(browserType: Class<RemoteWebDriver>): AbstractPageTes
     @Test fun `show currency extra info`() {
         page.curExtraLink.click()
         assertTrue(driver isExist By.xpath("//section[@class = 'widget' and @data-test = 'current-currency']"))
+    }
+
+    @Test fun `currency swapping`() {
+        val curSelectorsLbl = driver.findElements(By.xpath("//span[@data-bind = 'hint-text']")).zipWithNext()[0]
+        val getCurrencies = { curSelectorsLbl.first.text to curSelectorsLbl.second.text }
+        val oldCurrencies = getCurrencies()
+        page.curSwapper.click()
+        assertNotEquals(oldCurrencies, getCurrencies())
+    }
+
+    @Test fun `currency changing`() {
+        page.fCurSelectorLbl.click()
+        val newCurName = page.curListSelectorFirstCell.text
+        page.curListSelectorFirstCell.click()
+        assertEquals(newCurName, page.fCurSelectorLbl.text)
     }
 }

@@ -20,20 +20,21 @@ class BankRateTest(browserType: Class<RemoteWebDriver>): AbstractPageTest(browse
 
     @Test fun `show year champ table`() {
         page.champRateBtn.click()
-        assertTrue(driver.isExist(By.xpath("//span[contains(@class, 'active') and @data-test = 'main-tab']")))
+        assertTrue(driver isExist By.xpath("//span[contains(@class, 'active') and @data-test = 'main-tab']"))
     }
 
     @Test fun `show main table`() = assertNotNull(page.bankRateTbl)
 
-    @Test fun `find in table`() {
-        page.tableSearchInput.sendKeys("Альфа-Банк")
-        page.searchCandidatesList.changeStyle(driver, "display", "visible")
-        driver.findElement(By.xpath("//div[contains(@class, 'tt-selectable')]")).click()
-        assertTrue(driver.isExist(By.xpath("//tr[contains(@class, 'selected-item')]/a[text() = 'Альфа-Банк']")))
-    }
-
     @Test fun `open review page`() {
         page.allReviewsBtn.click()
-        assertTrue(driver.isExist(By.xpath("//h1[text() = 'Отзывы о банках']")))
+        assertTrue(driver.findElements(By.xpath("//article[@class = 'responses__item' and @data-test = 'responses-item']")).isNotEmpty())
+    }
+
+    @Test fun `find in table`() {
+        val bankName = "Альфа-Банк"
+        page.tableSearchInput.sendKeys(bankName)
+        page.searchCandidatesList.changeStyle(driver, "display", "visible")
+        driver.findElement(By.xpath("//div[@class = 'tt-suggestion tt-selectable']")).click()
+        assertEquals(driver.findElement(By.xpath("//tr[contains(@class, 'selected-item')]//a")).text, bankName)
     }
 }
