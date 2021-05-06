@@ -18,8 +18,8 @@ object DriverFactory {
         val driver = driverType.getConstructor().newInstance().apply {
             manage().window().maximize()
             manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS)
-            manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS)
-            manage().timeouts().setScriptTimeout(13, TimeUnit.SECONDS)
+            manage().timeouts().pageLoadTimeout(60, TimeUnit.SECONDS)
+            manage().timeouts().setScriptTimeout(20, TimeUnit.SECONDS)
         }
         return Env(driver, pageClass.getConstructor(WebDriver::class.java).newInstance(driver))
     }
